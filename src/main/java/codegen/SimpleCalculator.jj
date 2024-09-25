@@ -1,0 +1,63 @@
+options {
+        STATIC = false;
+        IGNORE_CASE = true;
+        UNICODE_INPUT = true;
+}
+
+
+PARSER_BEGIN(SimpleCalculatorParser)
+
+package com.bilibili.bigdata;
+
+public class SimpleCalculatorParser {
+
+}
+PARSER_END(SimpleCalculatorParser)
+
+SKIP : {
+" " | "\n" | "\t"
+}
+
+TOKEN : {
+<#DIGITS: (["0"-"9"])+>
+}
+
+TOKEN : {
+<NUMBER: <DIGITS> | <DIGITS>"."<DIGITS> >
+}
+
+TOKEN : {
+<OP_PLUS: "+"> |
+<OP_MINIS: "-"> |
+<OP_TIMES: "*"> |
+<OP_DIVIDE: "/">
+}
+
+double calc() throws Exception :
+{
+ Token left;
+ Token right;
+ double result;
+}
+{
+    left = <NUMBER>
+    (
+        <OP_PLUS>
+                right= <NUMBER>
+                {result = Double.parseDouble(left.image) + Double.parseDouble(right.image);}
+        |
+        <OP_MINIS>
+                right= <NUMBER>
+                {result = Double.parseDouble(left.image) - Double.parseDouble(right.image);}
+        |
+        <OP_TIMES>
+                right= <NUMBER>
+                {result = Double.parseDouble(left.image) * Double.parseDouble(right.image);}
+        |
+        <OP_DIVIDE>
+                right= <NUMBER>
+                {result = Double.parseDouble(left.image) / Double.parseDouble(right.image);}
+
+    )
+    {return result;}
+}
